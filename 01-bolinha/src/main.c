@@ -1,116 +1,160 @@
 /**
  * @file main.c
  * @author Prof. Dr. David Buzatto
- * @brief Main function and logic for the game. Simplified template for game
- * development in C using Raylib (https://www.raylib.com/).
+ * @brief Exemplo da bolinha!
  * 
  * @copyright Copyright (c) 2024
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
-/*---------------------------------------------
- * Library headers.
- *-------------------------------------------*/
 #include "raylib.h"
-//#include "raymath.h"
 
-/*---------------------------------------------
- * Project headers.
- *-------------------------------------------*/
+typedef struct Bolinha {
+    Vector2 pos;
+    Vector2 vel;
+    float raio;
+    float atrito;
+    float elasticidade;
+    bool arrastando;
+    Color cor;
+} Bolinha;
 
+const float GRAVIDADE = 50.0f;
 
-/*---------------------------------------------
- * Macros. 
- *-------------------------------------------*/
+void processarEntrada();
+void atualizar();
+void desenhar();
+void desenharBolinha();
 
+Bolinha bolinha = {0};
+int deslocamentoX;
+int deslocamentoY;
 
-/*--------------------------------------------
- * Constants. 
- *------------------------------------------*/
-
-
-/*---------------------------------------------
- * Custom types (enums, structs, unions, etc.)
- *-------------------------------------------*/
-
-
-/*---------------------------------------------
- * Global variables.
- *-------------------------------------------*/
-
-
-/*---------------------------------------------
- * Function prototypes. 
- *-------------------------------------------*/
-/**
- * @brief Reads user input and updates the state of the game.
- */
-void inputAndUpdate();
-
-/**
- * @brief Draws the state of the game.
- */
-void draw();
-
-/**
- * @brief Game entry point.
- */
 int main( void ) {
 
-    // local variables and initial user input
-
-    // antialiasing
     SetConfigFlags( FLAG_MSAA_4X_HINT );
+    InitWindow( 800, 450, "Bolinha!" );
+    SetTargetFPS( 60 );
 
-    // creates a new window 800 pixels wide and 450 pixels high
-    InitWindow( 800, 450, "Window Title" );
+    bolinha = (Bolinha) {
+        .pos = {
+            GetScreenWidth() / 2,
+            GetScreenHeight() / 2
+        },
+        .vel = {
+            300,
+            300
+        },
+        .raio = 50.0f,
+        .atrito = 0.99f,
+        .elasticidade = 0.90f,
+        .arrastando = false,
+        BLUE
+    };
 
-    // init audio device only if your game uses sounds
-    //InitAudioDevice();
-
-    // FPS: frames per second
-    SetTargetFPS( 60 );    
-
-    // you must load game resources here
-
-
-    // game loop
     while ( !WindowShouldClose() ) {
-        inputAndUpdate();
-        draw();
+        processarEntrada();
+        atualizar();
+        desenhar();
     }
 
-    // you should unload game resources here
-
-    
-    // close audio device only if your game uses sounds
-    //CloseAudioDevice();
     CloseWindow();
 
     return 0;
 
 }
 
-void inputAndUpdate() {
+void processarEntrada() {
+
+    if ( !bolinha.arrastando ) {
+
+        if ( IsMouseButtonPressed( MOUSE_BUTTON_LEFT ) ) {
+
+            int xMouse = GetMouseX();
+            int yMouse = GetMouseY();
+            
+            deslocamentoX = xMouse - bolinha.pos.x;
+            deslocamentoY = yMouse - bolinha.pos.y;
+            
+            /*float distancia = hypotf( deslocamentoX, deslocamentoY );
+
+            if ( distancia <= bolinha.raio ) {
+                bolinha.arrastando = true;
+            }*/
+            
+            if ( deslocamentoX * deslocamentoX + 
+                 deslocamentoY * deslocamentoY <= bolinha.raio * bolinha.raio ) {
+                bolinha.arrastando = true;
+            }
+
+        }
+
+    }
+
+    if ( IsMouseButtonReleased( MOUSE_BUTTON_LEFT ) ) {
+        bolinha.arrastando = false;
+    }
 
 }
 
-void draw() {
+void atualizar() {
+
+    float delta = GetFrameTime();
+
+    if ( !bolinha.arrastando ) {
+
+        bolinha.pos.x += bolinha.vel.x * delta;
+        bolinha.pos.y += bolinha.vel.y * delta;
+
+        if ( bolinha.pos.x + bolinha.raio >= GetScreenWidth() ) {
+            bolinha.pos.x = GetScreenWidth() - bolinha.raio;
+            bolinha.vel.x = -bolinha.vel.x * bolinha.elasticidade;
+        } else if ( bolinha.pos.x - bolinha.raio <= 0 ) {
+            bolinha.pos.x = bolinha.raio;
+            bolinha.vel.x = -bolinha.vel.x * bolinha.elasticidade;
+        }
+
+        if ( bolinha.pos.y + bolinha.raio >= GetScreenHeight() ) {
+            bolinha.pos.y = GetScreenHeight() - bolinha.raio;
+            bolinha.vel.y = -bolinha.vel.y * bolinha.elasticidade;
+        } else if ( bolinha.pos.y - bolinha.raio <= 0 ) {
+            bolinha.pos.y = bolinha.raio;
+            bolinha.vel.y = -bolinha.vel.y * bolinha.elasticidade;
+        }
+
+        bolinha.vel.x = bolinha.vel.x * bolinha.atrito;
+        bolinha.vel.y = bolinha.vel.y * bolinha.atrito + GRAVIDADE;
+
+    } else {
+
+        int xMouse = GetMouseX();
+        int yMouse = GetMouseY();
+
+        bolinha.pos.x = xMouse - deslocamentoX;
+        bolinha.pos.y = yMouse - deslocamentoY;
+
+        Vector2 mouseDelta = GetMouseDelta();
+        bolinha.vel.x = mouseDelta.x / delta;
+        bolinha.vel.y = mouseDelta.y / delta;
+
+    }
+
+}
+
+void desenhar() {
 
     BeginDrawing();
     ClearBackground( WHITE );
 
-    const char *text = "Basic game template";
-    Vector2 m = MeasureTextEx( GetFontDefault(), text, 40, 4 );
-    int x = GetScreenWidth() / 2 - m.x / 2;
-    int y = GetScreenHeight() / 2 - m.y / 2;
-    DrawRectangle( x, y, m.x, m.y, BLACK );
-    DrawText( text, x, y, 40, WHITE );
-
-    DrawFPS( 20, 20 );
+    desenharBolinha();
 
     EndDrawing();
 
+}
+
+void desenharBolinha() {
+    DrawCircleV( bolinha.pos, bolinha.raio, bolinha.cor );
 }
