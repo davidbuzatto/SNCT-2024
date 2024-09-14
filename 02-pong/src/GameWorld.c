@@ -13,7 +13,7 @@
 #include "Jogador.h"
 #include "Bola.h"
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 const float VELOCIDADE_MOVIMENTO_JOGADOR = 200.0f;
 const float VELOCIDADE_MOVIMENTO_BOLA = 200.0f;

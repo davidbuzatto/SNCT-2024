@@ -10,7 +10,7 @@
 #include "Jogador.h"
 #include "Bola.h"
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 typedef enum EstadoJogo {
     ESTADO_JOGO_PARADO,

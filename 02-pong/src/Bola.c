@@ -1,6 +1,6 @@
 #include "Bola.h"
 #include "Jogador.h"
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 Bola criarBola( Vector2 pos, Vector2 vel, float raio, Color cor ) {
     return (Bola){

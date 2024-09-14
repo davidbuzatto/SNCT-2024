@@ -1,5 +1,5 @@
 #include "Jogador.h"
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 Jogador criarJogador( Vector2 pos, Vector2 vel, Vector2 dim, Color cor ) {
 

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 int main( void ) {
 

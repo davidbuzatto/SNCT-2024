@@ -7,7 +7,7 @@
  */
 #pragma once
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 typedef struct ResourceManager {
     Texture2D textureExample;

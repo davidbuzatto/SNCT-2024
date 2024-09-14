@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "Jogador.h"
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 typedef enum ColisaoLateralBola {
     COLISAO_LATERAL_BOLA_NENHUMA,

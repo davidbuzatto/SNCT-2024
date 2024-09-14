@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 typedef struct Bolinha {
     Vector2 pos;
