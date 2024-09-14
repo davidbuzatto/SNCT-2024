@@ -24,10 +24,10 @@ typedef struct Bolinha {
 
 const float GRAVIDADE = 50.0f;
 
-void processarEntrada();
-void atualizar();
-void desenhar();
-void desenharBolinha();
+void processarEntrada( void );
+void atualizar( void );
+void desenhar( void );
+void desenharBolinha( void );
 
 Bolinha bolinha = {0};
 int deslocamentoX;
@@ -67,7 +67,7 @@ int main( void ) {
 
 }
 
-void processarEntrada() {
+void processarEntrada( void ) {
 
     if ( !bolinha.arrastando ) {
 
@@ -100,7 +100,7 @@ void processarEntrada() {
 
 }
 
-void atualizar() {
+void atualizar( void ) {
 
     float delta = GetFrameTime();
 
@@ -144,7 +144,7 @@ void atualizar() {
 
 }
 
-void desenhar() {
+void desenhar( void ) {
 
     BeginDrawing();
     ClearBackground( WHITE );
@@ -155,6 +155,6 @@ void desenhar() {
 
 }
 
-void desenharBolinha() {
+void desenharBolinha( void ) {
     DrawCircleV( bolinha.pos, bolinha.raio, bolinha.cor );
 }

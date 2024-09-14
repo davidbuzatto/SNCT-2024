@@ -7,8 +7,22 @@
  */
 #pragma once
 
+#include "Jogador.h"
+#include "Bola.h"
+
+#include "raylib.h"
+
+typedef enum EstadoJogo {
+    ESTADO_JOGO_PARADO,
+    ESTADO_JOGO_EXECUTANDO
+} EstadoJogo;
+
 typedef struct GameWorld {
-    int dummy;
+    Jogador jogador1;
+    Jogador jogador2;
+    Jogador *ultimoPontuar;
+    Bola bola;
+    EstadoJogo estado;
 } GameWorld;
 
 /**
@@ -30,3 +44,8 @@ void inputAndUpdateGameWorld( GameWorld *gw );
  * @brief Draws the state of the game.
  */
 void drawGameWorld( GameWorld *gw );
+
+void resolverColisaoBolaJogador( Bola *bola, Jogador *jogador );
+void pararJogo( GameWorld *gw );
+void recomecarJogo( GameWorld *gw );
+void desenharPlacar( GameWorld *gw );
