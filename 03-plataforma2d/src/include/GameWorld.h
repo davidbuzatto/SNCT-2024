@@ -7,8 +7,18 @@
  */
 #pragma once
 
+#include "Jogador.h"
+#include "Bloco.h"
+
+extern const float GRAVIDADE;
+
 typedef struct GameWorld {
-    int dummy;
+    
+    Jogador jogador;
+
+    int quantidadeBlocos;
+    Bloco *blocos;
+
 } GameWorld;
 
 /**
@@ -30,3 +40,5 @@ void inputAndUpdateGameWorld( GameWorld *gw );
  * @brief Draws the state of the game.
  */
 void drawGameWorld( GameWorld *gw );
+
+void processarMapa( GameWorld *gw, const char *dadosMapa );

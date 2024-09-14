@@ -1,1 +1,9 @@
-TODO
+03-plataforma2d:
+    otimização das colisões
+    correr
+    inimigos
+    texturas
+    animação
+    som
+    câmera
+    aumentar mapa

@@ -17,7 +17,7 @@ int main( void ) {
     GameWindow *gameWindow = createGameWindow(
         800,             // width
         450,             // height
-        "Window Title",  // title
+        "Plataforma 2D", // title
         60,              // target FPS
         true,            // antialiasing
         false,           // resizable
