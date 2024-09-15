@@ -7,12 +7,51 @@
  */
 #pragma once
 
+#include "Animacao.h"
+
 #include "raylib/raylib.h"
 
 typedef struct ResourceManager {
-    Texture2D textureExample;
-    Sound soundExample;
-    Music musicExample;
+
+    Texture2D tileA;
+    Texture2D tileB;
+    Texture2D tileC;
+    Texture2D tileD;
+    Texture2D tileE;
+    Texture2D tileF;
+    Texture2D tileG;
+    Texture2D tileH;
+    Texture2D tileI;
+
+    Texture2D jogadorE0;
+    Texture2D jogadorE1;
+    Texture2D jogadorD0;
+    Texture2D jogadorD1;
+
+    Texture2D item0;
+    Texture2D item1;
+    Texture2D item2;
+    Texture2D item3;
+
+    Texture2D inimigoE0;
+    Texture2D inimigoE1;
+    Texture2D inimigoD0;
+    Texture2D inimigoD1;
+
+    Sound pulo;
+    Sound item;
+    Sound batida;
+
+    Music musica;
+
+    Animacao *animacaoJogadorEsquerda;
+    Animacao *animacaoJogadorDireita;
+    
+    Animacao *animacaoItem;
+
+    Animacao *animacaoInimigoEsquerda;
+    Animacao *animacaoInimigoDireita;
+
 } ResourceManager;
 
 /**

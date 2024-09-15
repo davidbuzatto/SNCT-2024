@@ -9,6 +9,8 @@
 
 #include "Jogador.h"
 #include "Bloco.h"
+#include "Item.h"
+#include "Inimigo.h"
 
 extern const float GRAVIDADE;
 
@@ -16,8 +18,17 @@ typedef struct GameWorld {
     
     Jogador jogador;
 
-    int quantidadeBlocos;
+    int linhasMapa;
+    int colunasMapa;
     Bloco *blocos;
+
+    int quantidadeItens;
+    Item *itens;
+
+    int quantidadeInimigos;
+    Inimigo *inimigos;
+
+    Camera2D camera;
 
 } GameWorld;
 
@@ -41,4 +52,8 @@ void inputAndUpdateGameWorld( GameWorld *gw );
  */
 void drawGameWorld( GameWorld *gw );
 
-void processarMapa( GameWorld *gw, const char *dadosMapa );
+void processarMapa( GameWorld *gw, const char *dadosMapa, float dimensaoBlocos );
+void atualizarCamera( GameWorld *gw );
+void desenharHud( GameWorld *gw );
+void tocarMusica( void );
+Texture2D selecionarTile( char simbolo );

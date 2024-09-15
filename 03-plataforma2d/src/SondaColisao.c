@@ -1,5 +1,6 @@
 #include "SondaColisao.h"
 #include "Bloco.h"
+#include "Inimigo.h"
 #include "raylib/raylib.h"
 
 SondaColisao criarSondaColisao( Vector2 pos, Color cor ) {
@@ -31,6 +32,25 @@ bool checarColisaoSondaColisaoBloco( SondaColisao *sondaColisao, Bloco *bloco ) 
             .y = bloco->pos.y,
             .width = bloco->dim.x,
             .height = bloco->dim.y,
+        }
+    );
+
+}
+
+bool checarColisaoSondaColisaoInimigo( SondaColisao *sondaColisao, Inimigo *inimigo ) {
+    
+    return CheckCollisionRecs(
+        (Rectangle) {
+            .x = sondaColisao->pos.x,
+            .y = sondaColisao->pos.y,
+            .width = sondaColisao->dim.x,
+            .height = sondaColisao->dim.y,
+        },
+        (Rectangle) {
+            .x = inimigo->pos.x,
+            .y = inimigo->pos.y,
+            .width = inimigo->dim.x,
+            .height = inimigo->dim.y,
         }
     );
 

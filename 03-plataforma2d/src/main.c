@@ -19,14 +19,14 @@ int main( void ) {
         450,             // height
         "Plataforma 2D", // title
         60,              // target FPS
-        true,            // antialiasing
+        false,           // antialiasing
         false,           // resizable
         false,           // full screen
         false,           // undecorated
         false,           // always on top
         false,           // always run
-        false,           // load resources
-        false            // init audio
+        true,            // load resources
+        true             // init audio
     );
 
     initGameWindow( gameWindow );
