@@ -60,7 +60,7 @@ GameWorld* createGameWorld( void ) {
         "D                                                                 C\n"
         "D       IIIIIIIII                                                 C\n"
         "D                                                                 C\n"
-        "D     i  i  i  i  i                                               C\n"
+        "D     i  i  i  i  e                                               C\n"
         "D    IIIIIIIIIIIIIII                                              C\n"
         "D                                                                 C\n"
         "D                        e  e  e  e                               C\n"
