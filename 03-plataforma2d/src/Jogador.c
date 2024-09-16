@@ -7,6 +7,8 @@
 #include "Item.h"
 #include "Inimigo.h"
 #include "Animacao.h"
+#include "EstadoPosicao.h"
+#include "TipoColisao.h"
 #include "raylib/raylib.h"
 
 Jogador criarJogador( 
@@ -24,7 +26,7 @@ Jogador criarJogador(
         .velocidadePulo = velocidadePulo,
         .velocidadeMaximaQueda = 400.0f,
         .cor = cor,
-        .estadoPosicao = ESTADO_POSICAO_JOGADOR_NO_CHAO,
+        .estadoPosicao = ESTADO_POSICAO_NO_CHAO,
         .correndo = false,
         .viradoDireita = true,
         .quantidadeItensPegos = 0,
@@ -65,7 +67,7 @@ void processarEntradaJogador( Jogador *jogador ) {
         jogador->vel.x = 0.0f;
     }
 
-    if ( IsKeyPressed( KEY_SPACE ) && jogador->estadoPosicao == ESTADO_POSICAO_JOGADOR_NO_CHAO ) {
+    if ( IsKeyPressed( KEY_SPACE ) && jogador->estadoPosicao == ESTADO_POSICAO_NO_CHAO ) {
         jogador->vel.y = jogador->velocidadePulo;
         PlaySound( rm.pulo );
     }
@@ -78,9 +80,9 @@ void atualizarJogador( Jogador *jogador, float delta ) {
     jogador->pos.y += jogador->vel.y * delta;
 
     if ( jogador->vel.y > 0.0f ) {
-        jogador->estadoPosicao = ESTADO_POSICAO_JOGADOR_CAINDO;
+        jogador->estadoPosicao = ESTADO_POSICAO_CAINDO;
     } else if ( jogador->vel.y < 0.0f ) {
-        jogador->estadoPosicao = ESTADO_POSICAO_JOGADOR_PULANDO;
+        jogador->estadoPosicao = ESTADO_POSICAO_PULANDO;
     }
 
     jogador->vel.y += GRAVIDADE;
@@ -145,23 +147,23 @@ void resolverColisaoJogadorBlocos( Jogador *jogador, int quantidadeLinhas, int q
 
             if ( bloco->existe ) {
 
-                TipoColisaoJogador colisao = checarColisaoJogadorBloco( jogador, bloco, true );
+                TipoColisao colisao = checarColisaoJogadorBloco( jogador, bloco, true );
 
                 switch ( colisao ) {
-                    case TIPO_COLISAO_JOGADOR_ESQUERDA:
+                    case TIPO_COLISAO_ESQUERDA:
                         jogador->pos.x = bloco->pos.x + bloco->dim.x;
                         break;
-                    case TIPO_COLISAO_JOGADOR_DIREITA:
+                    case TIPO_COLISAO_DIREITA:
                         jogador->pos.x = bloco->pos.x - jogador->dim.x;
                         break;
-                    case TIPO_COLISAO_JOGADOR_CIMA:
+                    case TIPO_COLISAO_CIMA:
                         jogador->pos.y = bloco->pos.y + bloco->dim.y;
                         jogador->vel.y = 0.0f;
                         break;
-                    case TIPO_COLISAO_JOGADOR_BAIXO:
+                    case TIPO_COLISAO_BAIXO:
                         jogador->pos.y = bloco->pos.y - jogador->dim.y;
                         jogador->vel.y = 0.0f;
-                        jogador->estadoPosicao = ESTADO_POSICAO_JOGADOR_NO_CHAO;
+                        jogador->estadoPosicao = ESTADO_POSICAO_NO_CHAO;
                         break;
                     default:
                         break;
@@ -175,28 +177,28 @@ void resolverColisaoJogadorBlocos( Jogador *jogador, int quantidadeLinhas, int q
 
 }
 
-TipoColisaoJogador checarColisaoJogadorBloco( Jogador *jogador, Bloco *bloco, bool checarSondas ) {
+TipoColisao checarColisaoJogadorBloco( Jogador *jogador, Bloco *bloco, bool checarSondas ) {
     
     if ( checarSondas ) {
 
         if ( checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_ESQUERDA_CIMA], bloco ) ||
             checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_ESQUERDA_BAIXO], bloco ) ) {
-            return TIPO_COLISAO_JOGADOR_ESQUERDA;
+            return TIPO_COLISAO_ESQUERDA;
         }
 
         if ( checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_DIREITA_CIMA], bloco ) ||
             checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_DIREITA_BAIXO], bloco ) ) {
-            return TIPO_COLISAO_JOGADOR_DIREITA;
+            return TIPO_COLISAO_DIREITA;
         }
 
         if ( checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_CIMA_ESQUERDA], bloco ) ||
             checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_CIMA_DIREITA], bloco ) ) {
-            return TIPO_COLISAO_JOGADOR_CIMA;
+            return TIPO_COLISAO_CIMA;
         }
 
         if ( checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_BAIXO_ESQUERDA], bloco ) ||
             checarColisaoSondaColisaoBloco( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_BAIXO_DIREITA], bloco ) ) {
-            return TIPO_COLISAO_JOGADOR_BAIXO;
+            return TIPO_COLISAO_BAIXO;
         }
 
     } else {
@@ -217,12 +219,12 @@ TipoColisaoJogador checarColisaoJogadorBloco( Jogador *jogador, Bloco *bloco, bo
         );
 
         if ( col ) {
-            return TIPO_COLISAO_JOGADOR_INTERSECCAO;
+            return TIPO_COLISAO_INTERSECCAO;
         }
 
     }
 
-    return TIPO_COLISAO_JOGADOR_NENHUMA;
+    return TIPO_COLISAO_NENHUMA;
 
 }
 
@@ -232,7 +234,7 @@ void resolverColisaoJogadorItens( Jogador *jogador, int quantidadeItens, Item *i
             
         Item *item = &itens[i];
 
-        if ( item->ativo && checarColisaoJogadorItem( jogador, item ) == TIPO_COLISAO_JOGADOR_INTERSECCAO ) {
+        if ( item->ativo && checarColisaoJogadorItem( jogador, item ) == TIPO_COLISAO_INTERSECCAO ) {
             jogador->quantidadeItensPegos++;
             item->ativo = false;
             jogador->pontos += item->pontosAoSerPego;
@@ -244,7 +246,7 @@ void resolverColisaoJogadorItens( Jogador *jogador, int quantidadeItens, Item *i
 
 }
 
-TipoColisaoJogador checarColisaoJogadorItem( Jogador *jogador, Item *item ) {
+TipoColisao checarColisaoJogadorItem( Jogador *jogador, Item *item ) {
 
     bool col = CheckCollisionRecs(
         (Rectangle) {
@@ -262,10 +264,10 @@ TipoColisaoJogador checarColisaoJogadorItem( Jogador *jogador, Item *item ) {
     );
 
     if ( col ) {
-        return TIPO_COLISAO_JOGADOR_INTERSECCAO;
+        return TIPO_COLISAO_INTERSECCAO;
     }
 
-    return TIPO_COLISAO_JOGADOR_NENHUMA;
+    return TIPO_COLISAO_NENHUMA;
 
 }
 
@@ -277,23 +279,23 @@ void resolverColisaoJogadorInimigos( Jogador *jogador, int quantidadeInimigos, I
 
         if ( inimigo->vivo ) {
 
-            TipoColisaoJogador colisao = checarColisaoJogadorInimigo( jogador, inimigo, true );
+            TipoColisao colisao = checarColisaoJogadorInimigo( jogador, inimigo, true );
 
             switch ( colisao ) {
-                case TIPO_COLISAO_JOGADOR_ESQUERDA:
+                case TIPO_COLISAO_ESQUERDA:
                     jogador->pos.x = inimigo->pos.x + inimigo->dim.x;
                     jogador->vida--;
                     break;
-                case TIPO_COLISAO_JOGADOR_DIREITA:
+                case TIPO_COLISAO_DIREITA:
                     jogador->pos.x = inimigo->pos.x - jogador->dim.x;
                     jogador->vida--;
                     break;
-                case TIPO_COLISAO_JOGADOR_CIMA:
+                case TIPO_COLISAO_CIMA:
                     jogador->pos.y = inimigo->pos.y + inimigo->dim.y;
                     jogador->vel.y = 0.0f;
                     jogador->vida--;
                     break;
-                case TIPO_COLISAO_JOGADOR_BAIXO:
+                case TIPO_COLISAO_BAIXO:
                     jogador->pos.y = inimigo->pos.y - jogador->dim.y;
                     jogador->vel.y = jogador->velocidadePulo;
                     inimigo->vivo = false;
@@ -310,28 +312,28 @@ void resolverColisaoJogadorInimigos( Jogador *jogador, int quantidadeInimigos, I
 
 }
 
-TipoColisaoJogador checarColisaoJogadorInimigo( Jogador *jogador, Inimigo *inimigo, bool checarSondas ) {
+TipoColisao checarColisaoJogadorInimigo( Jogador *jogador, Inimigo *inimigo, bool checarSondas ) {
     
     if ( checarSondas ) {
 
         if ( checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_ESQUERDA_CIMA], inimigo ) ||
             checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_ESQUERDA_BAIXO], inimigo ) ) {
-            return TIPO_COLISAO_JOGADOR_ESQUERDA;
+            return TIPO_COLISAO_ESQUERDA;
         }
 
         if ( checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_DIREITA_CIMA], inimigo ) ||
             checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_DIREITA_BAIXO], inimigo ) ) {
-            return TIPO_COLISAO_JOGADOR_DIREITA;
+            return TIPO_COLISAO_DIREITA;
         }
 
         if ( checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_CIMA_ESQUERDA], inimigo ) ||
             checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_CIMA_DIREITA], inimigo ) ) {
-            return TIPO_COLISAO_JOGADOR_CIMA;
+            return TIPO_COLISAO_CIMA;
         }
 
         if ( checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_BAIXO_ESQUERDA], inimigo ) ||
             checarColisaoSondaColisaoInimigo( &jogador->sondasColisao[POSICAO_SONDA_COLISAO_JOGADOR_BAIXO_DIREITA], inimigo ) ) {
-            return TIPO_COLISAO_JOGADOR_BAIXO;
+            return TIPO_COLISAO_BAIXO;
         }
 
     } else {
@@ -352,11 +354,11 @@ TipoColisaoJogador checarColisaoJogadorInimigo( Jogador *jogador, Inimigo *inimi
         );
 
         if ( col ) {
-            return TIPO_COLISAO_JOGADOR_INTERSECCAO;
+            return TIPO_COLISAO_INTERSECCAO;
         }
 
     }
 
-    return TIPO_COLISAO_JOGADOR_NENHUMA;
+    return TIPO_COLISAO_NENHUMA;
 
 }

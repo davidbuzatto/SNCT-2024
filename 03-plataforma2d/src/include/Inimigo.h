@@ -2,14 +2,10 @@
 
 #include "Animacao.h"
 #include "SondaColisao.h"
+#include "EstadoPosicao.h"
+#include "TipoColisao.h"
 
 #include "raylib/raylib.h"
-
-typedef enum EstadoPosicaoInimigo {
-    ESTADO_POSICAO_INIMIGO_NO_CHAO,
-    ESTADO_POSICAO_INIMIGO_PULANDO,
-    ESTADO_POSICAO_INIMIGO_CAINDO
-} EstadoPosicaoInimigo;
 
 typedef enum PosicaoSondaColisaoInimigo {
     POSICAO_SONDA_COLISAO_INIMIGO_ESQUERDA,
@@ -17,15 +13,6 @@ typedef enum PosicaoSondaColisaoInimigo {
     POSICAO_SONDA_COLISAO_INIMIGO_CIMA,
     POSICAO_SONDA_COLISAO_INIMIGO_BAIXO
 } PosicaoSondaColisaoInimigo;
-
-typedef enum TipoColisaoInimigo {
-    TIPO_COLISAO_INIMIGO_NENHUMA,
-    TIPO_COLISAO_INIMIGO_INTERSECCAO,
-    TIPO_COLISAO_INIMIGO_ESQUERDA,
-    TIPO_COLISAO_INIMIGO_DIREITA,
-    TIPO_COLISAO_INIMIGO_CIMA,
-    TIPO_COLISAO_INIMIGO_BAIXO
-} TipoColisaoInimigo;
 
 typedef struct Inimigo {
 
@@ -37,7 +24,7 @@ typedef struct Inimigo {
 
     Color cor;
 
-    EstadoPosicaoInimigo estadoPosicao;
+    EstadoPosicao estadoPosicao;
     bool vivo;
     bool viradoDireita;
     int pontosAoSerMorto;
@@ -56,4 +43,4 @@ void desenharInimigo( Inimigo *inimigo );
 void atualizarSondasColisaoInimigo( Inimigo *inimigo );
 
 void resolverColisaoInimigoBlocos( Inimigo *inimigo, int quantidadeLinhas, int quantidadeColunas, Bloco *blocos );
-TipoColisaoInimigo checarColisaoInimigoBloco( Inimigo *inimigo, Bloco *bloco, bool checarSondas );
+TipoColisao checarColisaoInimigoBloco( Inimigo *inimigo, Bloco *bloco, bool checarSondas );

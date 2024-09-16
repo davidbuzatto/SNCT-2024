@@ -1,0 +1,10 @@
+#pragma once
+
+typedef enum TipoColisao {
+    TIPO_COLISAO_NENHUMA,
+    TIPO_COLISAO_INTERSECCAO,
+    TIPO_COLISAO_ESQUERDA,
+    TIPO_COLISAO_DIREITA,
+    TIPO_COLISAO_CIMA,
+    TIPO_COLISAO_BAIXO
+} TipoColisao;

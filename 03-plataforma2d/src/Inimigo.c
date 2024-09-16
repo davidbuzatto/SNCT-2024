@@ -2,6 +2,8 @@
 #include "Inimigo.h"
 #include "Animacao.h"
 #include "SondaColisao.h"
+#include "EstadoPosicao.h"
+#include "TipoColisao.h"
 #include "raylib/raylib.h"
 
 Inimigo criarInimigo( Vector2 pos, Vector2 dim, float velocidadeCaminhada, Color cor, Animacao *animacaoEsquerda, Animacao *animacaoDireita ) {
@@ -13,7 +15,7 @@ Inimigo criarInimigo( Vector2 pos, Vector2 dim, float velocidadeCaminhada, Color
         .velocidadeCaminhada = velocidadeCaminhada,
         .velocidadeMaximaQueda = 400.0f,
         .cor = cor,
-        .estadoPosicao = ESTADO_POSICAO_INIMIGO_NO_CHAO,
+        .estadoPosicao = ESTADO_POSICAO_NO_CHAO,
         .vivo = true,
         .viradoDireita = false,
         .pontosAoSerMorto = 100,
@@ -44,9 +46,9 @@ void atualizarInimigo( Inimigo *inimigo, float delta ) {
         }
 
         if ( inimigo->vel.y > 0.0f ) {
-            inimigo->estadoPosicao = ESTADO_POSICAO_INIMIGO_CAINDO;
+            inimigo->estadoPosicao = ESTADO_POSICAO_CAINDO;
         } else if ( inimigo->vel.y < 0.0f ) {
-            inimigo->estadoPosicao = ESTADO_POSICAO_INIMIGO_PULANDO;
+            inimigo->estadoPosicao = ESTADO_POSICAO_PULANDO;
         }
 
         inimigo->vel.y += GRAVIDADE;
@@ -110,24 +112,24 @@ void resolverColisaoInimigoBlocos( Inimigo *inimigo, int quantidadeLinhas, int q
 
             if ( bloco->existe ) {
 
-                TipoColisaoInimigo colisao = checarColisaoInimigoBloco( inimigo, bloco, true );
+                TipoColisao colisao = checarColisaoInimigoBloco( inimigo, bloco, true );
 
                 switch ( colisao ) {
-                    case TIPO_COLISAO_INIMIGO_ESQUERDA:
+                    case TIPO_COLISAO_ESQUERDA:
                         inimigo->pos.x = bloco->pos.x + bloco->dim.x + 2;
                         inimigo->viradoDireita = !inimigo->viradoDireita;
                         break;
-                    case TIPO_COLISAO_INIMIGO_DIREITA:
+                    case TIPO_COLISAO_DIREITA:
                         inimigo->pos.x = bloco->pos.x - inimigo->dim.x - 2;
                         inimigo->viradoDireita = !inimigo->viradoDireita;
                         break;
-                    case TIPO_COLISAO_INIMIGO_CIMA:
+                    case TIPO_COLISAO_CIMA:
                         inimigo->pos.y = bloco->pos.y + bloco->dim.y;
                         break;
-                    case TIPO_COLISAO_INIMIGO_BAIXO:
+                    case TIPO_COLISAO_BAIXO:
                         inimigo->pos.y = bloco->pos.y - inimigo->dim.y;
                         inimigo->vel.y = 0.0f;
-                        inimigo->estadoPosicao = ESTADO_POSICAO_INIMIGO_NO_CHAO;
+                        inimigo->estadoPosicao = ESTADO_POSICAO_NO_CHAO;
                         break;
                     default:
                         break;
@@ -141,24 +143,24 @@ void resolverColisaoInimigoBlocos( Inimigo *inimigo, int quantidadeLinhas, int q
 
 }
 
-TipoColisaoInimigo checarColisaoInimigoBloco( Inimigo *inimigo, Bloco *bloco, bool checarSondas ) {
+TipoColisao checarColisaoInimigoBloco( Inimigo *inimigo, Bloco *bloco, bool checarSondas ) {
     
     if ( checarSondas ) {
 
         if ( checarColisaoSondaColisaoBloco( &inimigo->sondasColisao[POSICAO_SONDA_COLISAO_INIMIGO_ESQUERDA], bloco ) ) {
-            return TIPO_COLISAO_INIMIGO_ESQUERDA;
+            return TIPO_COLISAO_ESQUERDA;
         }
 
         if ( checarColisaoSondaColisaoBloco( &inimigo->sondasColisao[POSICAO_SONDA_COLISAO_INIMIGO_DIREITA], bloco ) ) {
-            return TIPO_COLISAO_INIMIGO_DIREITA;
+            return TIPO_COLISAO_DIREITA;
         }
 
         if ( checarColisaoSondaColisaoBloco( &inimigo->sondasColisao[POSICAO_SONDA_COLISAO_INIMIGO_CIMA], bloco ) ) {
-            return TIPO_COLISAO_INIMIGO_CIMA;
+            return TIPO_COLISAO_CIMA;
         }
 
         if ( checarColisaoSondaColisaoBloco( &inimigo->sondasColisao[POSICAO_SONDA_COLISAO_INIMIGO_BAIXO], bloco ) ) {
-            return TIPO_COLISAO_INIMIGO_BAIXO;
+            return TIPO_COLISAO_BAIXO;
         }
 
     } else {
@@ -179,11 +181,11 @@ TipoColisaoInimigo checarColisaoInimigoBloco( Inimigo *inimigo, Bloco *bloco, bo
         );
 
         if ( col ) {
-            return TIPO_COLISAO_INIMIGO_INTERSECCAO;
+            return TIPO_COLISAO_INTERSECCAO;
         }
 
     }
 
-    return TIPO_COLISAO_INIMIGO_NENHUMA;
+    return TIPO_COLISAO_NENHUMA;
 
 }

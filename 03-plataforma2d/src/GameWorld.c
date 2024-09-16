@@ -51,21 +51,25 @@ GameWorld* createGameWorld( void ) {
     atualizarSondasColisaoJogador( &gw->jogador );
 
     const char *mapa = 
-        "D                                                                 C\n"
-        "D                                                                 C\n"
-        "D                                                                 C\n"
-        "D                                                                 C\n"
-        "D                                                                 C\n"
-        "D           j                                                     C\n"
-        "D                                                                 C\n"
-        "D       IIIIIIIII                                                 C\n"
-        "D                                                                 C\n"
-        "D     i  i  i  i  e                                               C\n"
-        "D    IIIIIIIIIIIIIII                                              C\n"
-        "D                                                                 C\n"
-        "D                        e  e  e  e                               C\n"
-        "HBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBG\n"
-        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+        "D                                                                C\n"
+        "D                                                                C\n"
+        "D                                                                C\n"
+        "D           j                                                    C\n"
+        "D                                                                C\n"
+        "D           I                                                IIIIC\n"
+        "D                                                                C\n"
+        "D                                                                C\n"
+        "D          III                                             IIII  C\n"
+        "D                                                                C\n"
+        "D                                                                C\n"
+        "D       IIIIIIIII                                        IIII    C\n"
+        "D                                                                C\n"
+        "D     i  i  i  i  e                                              C\n"
+        "D    IIIIIIIIIIIIIII                                   IIII      C\n"
+        "D                                                                C\n"
+        "D                        e  e  e  e                              C\n"
+        "HBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBG\n"
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
 
     processarMapa( gw, mapa, DIMENSAO_TILES );
 
@@ -289,7 +293,38 @@ void processarMapa( GameWorld *gw, const char *dadosMapa, float dimensaoBlocos )
 }
 
 void atualizarCamera( GameWorld *gw ) {
-    gw->camera.target = gw->jogador.pos;
+
+    Vector2 posJogador = gw->jogador.pos;
+    int larguraMaxima = gw->colunasMapa * DIMENSAO_TILES;
+    int alturaMaxima = gw->linhasMapa * DIMENSAO_TILES;
+
+    float metadeLarguraTela = GetScreenWidth() / 2.0f;
+    float metadeAlturaTela = GetScreenHeight() / 2.0f;
+
+    gw->camera.target = posJogador;
+
+    // ajuste do deslocamento
+    
+    // esquerda / direita
+    if ( posJogador.x <= metadeLarguraTela ) {
+        gw->camera.offset.x = posJogador.x;
+    } else if ( posJogador.x >= larguraMaxima - metadeLarguraTela ) {
+        gw->camera.target.x = larguraMaxima - GetScreenWidth();
+        gw->camera.offset.x = 0.0f;
+    } else {
+        gw->camera.offset.x = metadeLarguraTela;
+    }
+
+    // cima / baixo
+    if ( posJogador.y <= metadeAlturaTela ) {
+        gw->camera.offset.y = posJogador.y;
+    } else if ( posJogador.y >= alturaMaxima - metadeAlturaTela ) {
+        gw->camera.target.y = alturaMaxima - GetScreenHeight();
+        gw->camera.offset.y = 0.0f;
+    } else {
+        gw->camera.offset.y = metadeAlturaTela;
+    }
+
 }
 
 void desenharHud( GameWorld *gw ) {

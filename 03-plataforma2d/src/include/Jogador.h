@@ -6,13 +6,10 @@
 #include "Item.h"
 #include "Inimigo.h"
 #include "SondaColisao.h"
-#include "raylib/raylib.h"
+#include "EstadoPosicao.h"
+#include "TipoColisao.h"
 
-typedef enum EstadoPosicaoJogador {
-    ESTADO_POSICAO_JOGADOR_NO_CHAO,
-    ESTADO_POSICAO_JOGADOR_PULANDO,
-    ESTADO_POSICAO_JOGADOR_CAINDO
-} EstadoPosicaoJogador;
+#include "raylib/raylib.h"
 
 typedef enum PosicaoSondaColisaoJogador {
     POSICAO_SONDA_COLISAO_JOGADOR_ESQUERDA_CIMA,
@@ -24,15 +21,6 @@ typedef enum PosicaoSondaColisaoJogador {
     POSICAO_SONDA_COLISAO_JOGADOR_BAIXO_ESQUERDA,
     POSICAO_SONDA_COLISAO_JOGADOR_BAIXO_DIREITA
 } PosicaoSondaColisaoJogador;
-
-typedef enum TipoColisaoJogador {
-    TIPO_COLISAO_JOGADOR_NENHUMA,
-    TIPO_COLISAO_JOGADOR_INTERSECCAO,
-    TIPO_COLISAO_JOGADOR_ESQUERDA,
-    TIPO_COLISAO_JOGADOR_DIREITA,
-    TIPO_COLISAO_JOGADOR_CIMA,
-    TIPO_COLISAO_JOGADOR_BAIXO
-} TipoColisaoJogador;
 
 typedef struct Jogador {
 
@@ -47,7 +35,7 @@ typedef struct Jogador {
 
     Color cor;
 
-    EstadoPosicaoJogador estadoPosicao;
+    EstadoPosicao estadoPosicao;
     bool correndo;
     bool viradoDireita;
 
@@ -71,10 +59,10 @@ void desenharJogador( Jogador *jogador );
 void atualizarSondasColisaoJogador( Jogador *jogador );
 
 void resolverColisaoJogadorBlocos( Jogador *jogador, int quantidadeLinhas, int quantidadeColunas, Bloco *blocos );
-TipoColisaoJogador checarColisaoJogadorBloco( Jogador *jogador, Bloco *bloco, bool checarSondas );
+TipoColisao checarColisaoJogadorBloco( Jogador *jogador, Bloco *bloco, bool checarSondas );
 
 void resolverColisaoJogadorItens( Jogador *jogador, int quantidadeItens, Item *itens );
-TipoColisaoJogador checarColisaoJogadorItem( Jogador *jogador, Item *item );
+TipoColisao checarColisaoJogadorItem( Jogador *jogador, Item *item );
 
 void resolverColisaoJogadorInimigos( Jogador *jogador, int quantidadeInimigos, Inimigo *inimigos );
-TipoColisaoJogador checarColisaoJogadorInimigo( Jogador *jogador, Inimigo *inimigo, bool checarSondas );
+TipoColisao checarColisaoJogadorInimigo( Jogador *jogador, Inimigo *inimigo, bool checarSondas );
