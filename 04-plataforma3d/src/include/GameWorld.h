@@ -7,8 +7,20 @@
  */
 #pragma once
 
+#include "Jogador.h"
+#include "Bloco.h"
+
+#include "raylib/raylib.h"
+
+extern const float GRAVIDADE;
+
 typedef struct GameWorld {
-    int dummy;
+
+    Jogador jogador;
+    Bloco chao;
+
+    Camera3D camera;
+
 } GameWorld;
 
 /**
@@ -30,3 +42,6 @@ void inputAndUpdateGameWorld( GameWorld *gw );
  * @brief Draws the state of the game.
  */
 void drawGameWorld( GameWorld *gw );
+
+void desenharHud( GameWorld *gw );
+void atualizarCamera( GameWorld *gw );

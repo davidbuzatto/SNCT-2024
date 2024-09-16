@@ -14,13 +14,13 @@
 ResourceManager rm = { 0 };
 
 void loadResourcesResourceManager( void ) {
-    rm.textureExample = LoadTexture( "resources/images/mario.png" );
-    rm.soundExample = LoadSound( "resources/sfx/powerUp.wav" );
-    rm.musicExample = LoadMusicStream( "resources/musics/overworld1.ogg" );
+    rm.pulo = LoadSound( "resources/efeitosSonoros/pulo.wav" );
+    rm.item = LoadSound( "resources/efeitosSonoros/item.wav" );
+    rm.batida = LoadSound( "resources/efeitosSonoros/batida.wav" );
 }
 
 void unloadResourcesResourceManager( void ) {
-    UnloadTexture( rm.textureExample );
-    UnloadSound( rm.soundExample );
-    UnloadMusicStream( rm.musicExample );
+    UnloadSound( rm.pulo );
+    UnloadSound( rm.item );
+    UnloadSound( rm.batida );
 }

@@ -9,6 +9,8 @@
 #include <stdlib.h>
 
 #include "GameWorld.h"
+#include "Jogador.h"
+#include "Bloco.h"
 #include "ResourceManager.h"
 
 #include "raylib/raylib.h"
@@ -17,6 +19,8 @@
 //#include "raylib/raygui.h"              // other compilation units must only include
 //#undef RAYGUI_IMPLEMENTATION     // raygui.h
 
+const float GRAVIDADE = 1.0f;
+
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.
  */
@@ -24,7 +28,27 @@ GameWorld* createGameWorld( void ) {
 
     GameWorld *gw = (GameWorld*) malloc( sizeof( GameWorld ) );
 
-    gw->dummy = 0;
+    gw->jogador = criarJogador(
+        (Vector3){ 30.0f, 3.0f, 10.0f },
+        (Vector3){ 2.0f, 2.0f, 2.0f },
+        30.0f,
+        20.0f,
+        BLUE
+    );
+
+    gw->chao = criarBloco(
+        (Vector3){ 30.0f, 1.0f, 10.0f },
+        (Vector3){ 60.0f, 2.0f, 20.0f },
+        ORANGE
+    );
+
+    gw->camera = (Camera3D) {
+        .position = { 30.0f, 25.0f, 40.0f },
+        .target = gw->jogador.pos,
+        .up = { 0.0f, 1.0f, 0.0f },
+        .fovy = 45.0f,
+        .projection = CAMERA_PERSPECTIVE
+    };
 
     return gw;
 
@@ -42,6 +66,17 @@ void destroyGameWorld( GameWorld *gw ) {
  */
 void inputAndUpdateGameWorld( GameWorld *gw ) {
 
+    float delta = GetFrameTime();
+
+    Jogador *jogador = &gw->jogador;
+    Bloco *chao = &gw->chao;
+
+    processarEntradaJogador( &gw->jogador );
+    atualizarJogador( &gw->jogador, delta );
+    resolverColisaoJogadorChao( jogador, chao );
+
+    atualizarCamera( gw );
+
 }
 
 /**
@@ -52,15 +87,60 @@ void drawGameWorld( GameWorld *gw ) {
     BeginDrawing();
     ClearBackground( WHITE );
 
-    const char *text = "Basic game template";
-    Vector2 m = MeasureTextEx( GetFontDefault(), text, 40, 4 );
-    int x = GetScreenWidth() / 2 - m.x / 2;
-    int y = GetScreenHeight() / 2 - m.y / 2;
-    DrawRectangle( x, y, m.x, m.y, BLACK );
-    DrawText( text, x, y, 40, WHITE );
+    BeginMode3D( gw->camera );
 
-    DrawFPS( 20, 20 );
+    desenharJogador( &gw->jogador );
+    desenharBloco( &gw->chao );
+
+    EndMode3D();
+
+    desenharHud( gw );
 
     EndDrawing();
+
+}
+
+void desenharHud( GameWorld *gw ) {
+
+    Camera3D *camera = &gw->camera;
+
+    DrawText( 
+        TextFormat( "camera: x=%.2f, y=%.2f, z=%.2f", 
+            camera->position.x, 
+            camera->position.y, 
+            camera->position.z
+        ), 
+        10, 10, 20, BLACK
+    );
+
+    DrawFPS( 10, 30 );
+
+}
+
+void atualizarCamera( GameWorld *gw ) {
+
+    if ( IsKeyDown( KEY_UP ) ) {
+        gw->camera.position.y++;
+    } else if ( IsKeyDown( KEY_DOWN ) ) {
+        gw->camera.position.y--;
+    }
+
+    /*if ( IsKeyDown( KEY_LEFT ) ) {
+        gw->camera.position.x--;
+    } else if ( IsKeyDown( KEY_RIGHT ) ) {
+        gw->camera.position.x++;
+    }*/
+
+    if ( IsKeyDown( KEY_KP_ADD ) ) {
+        gw->camera.position.z++;
+    } else if ( IsKeyDown( KEY_KP_SUBTRACT ) ) {
+        gw->camera.position.z--;
+        if ( gw->camera.position.z <= gw->chao.pos.z ) {
+            gw->camera.position.z = gw->chao.pos.z + 1;
+        }
+    }
+
+    gw->camera.position.x = gw->jogador.pos.x;
+    gw->camera.target = gw->jogador.pos;
 
 }

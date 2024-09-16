@@ -17,7 +17,7 @@ int main( void ) {
     GameWindow *gameWindow = createGameWindow(
         800,             // width
         450,             // height
-        "Window Title",  // title
+        "Plataforma 3D", // title
         60,              // target FPS
         true,            // antialiasing
         false,           // resizable
@@ -25,8 +25,8 @@ int main( void ) {
         false,           // undecorated
         false,           // always on top
         false,           // always run
-        false,           // load resources
-        false            // init audio
+        true,            // load resources
+        true             // init audio
     );
 
     initGameWindow( gameWindow );
