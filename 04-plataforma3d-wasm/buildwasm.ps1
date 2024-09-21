@@ -57,7 +57,7 @@ if ( $compile -or $cleanAndCompile -or $compileAndRun -or $all ) {
          -Wno-missing-braces `
          -Wunused-result `
          -Os `
-         -I. -I./include -I./src/include/ -I./src/include/raylib `
+         -I. -I./src/include `
          -L. -L./lib/wasm/ `
          -s USE_GLFW=3 `
          -s ASYNCIFY `
