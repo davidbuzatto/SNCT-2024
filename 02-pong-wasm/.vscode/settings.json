@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "raylib.h": "c",
-        "utils.h": "c"
-    }
-}
